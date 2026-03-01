@@ -29,7 +29,7 @@
 
 ## 安装与构建
 
-- **直接使用**：从 [Releases](https://github.com/YOUR_USERNAME/weasel-pbw2/releases)（请将 `YOUR_USERNAME` 改为你的 GitHub 用户名） 下载安装包，安装后与官方小狼毫一样使用，并在 `weasel.yaml` 中启用并配置 LLM（见下）。
+- **直接使用**：从 [Releases](https://github.com/scukeqi/Wisdom-Weasel)（请将 `YOUR_USERNAME` 改为你的 GitHub 用户名） 下载安装包，安装后与官方小狼毫一样使用，并在 `weasel.yaml` 中启用并配置 LLM（见下）。
 - **从源码构建**：  
   - 使用 Visual Studio 打开解决方案 `weasel.sln`，选择 Release 与目标平台（如 x64），编译。  
   - 依赖与官方 Weasel 一致（如 Boost、librime、yaml-cpp 等，见项目与 `weasel.props`）。  
@@ -39,7 +39,7 @@
 
 ## LLM 配置说明
 
-配置写在 **Rime 用户目录** 下的 `weasel.yaml`（或合并到 `weasel.custom.yaml`）中。路径一般为：`%AppData%\Rime\weasel.yaml`。
+配置写在 **Rime 用户目录** 下的 `weasel.yaml`中。路径一般为：`%AppData%\Rime\weasel.yaml`。
 
 ### 总开关与提供者类型
 
