@@ -1,0 +1,13 @@
+{
+  "comment": "后端推理服务配置文件",
+  "model_id": "your-model-path",
+  "torch_dtype": "bfloat16",
+  "device_map": "auto",
+  "generation": {
+    "max_new_tokens_no_constraint": 4,
+    "num_beams": 10,
+    "num_return_sequences": 5,
+    "num_beam_groups": 5,
+    "diversity_penalty_no_constraint": 100.0
+  }
+}
