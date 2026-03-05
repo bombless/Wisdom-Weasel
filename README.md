@@ -29,7 +29,7 @@
 
 ## 安装与构建
 
-- **直接使用**：从 [Releases](https://github.com/scukeqi/Wisdom-Weasel/releases)下载安装包，安装后与官方小狼毫一样使用，并在 `weasel.yaml` 中启用并配置 LLM（见下）。
+- **直接使用（待完成）**：从 [Releases](https://github.com/scukeqi/Wisdom-Weasel/releases)下载安装包，安装后与官方小狼毫一样使用，并在 `weasel.yaml` 中启用并配置 LLM 。
 - **从源码构建**：  
   - 运行 `build.bat x64`  
   - 依赖与官方 Weasel 一致（如 Boost、librime、yaml-cpp 等，见项目与 `weasel.props`）。  
