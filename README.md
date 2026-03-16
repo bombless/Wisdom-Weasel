@@ -141,7 +141,7 @@ dev_console:
 
 ## 问题与反馈
 
-- 本分支（LLM 预测功能、构建与配置）相关问题，请在本仓库 [Issues](https://github.com/scukeqi/Wisdom-Weasel/issues)（请将 `YOUR_USERNAME` 改为你的 GitHub 用户名） 中反馈。  
+- 本分支（LLM 预测功能、构建与配置）相关问题，请在本仓库 [Issues](https://github.com/scukeqi/Wisdom-Weasel/issues) 中反馈。  
 - Rime 输入法通用问题（方案、词库、部署等），请反馈至 [Rime 之家](https://github.com/rime/home/issues)。  
 - 欢迎提交 Pull Request。
 
