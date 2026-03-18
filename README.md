@@ -25,6 +25,9 @@
   - 使用 `llamacpp` 时需本机加载 GGUF 模型（建议 4GB+ 显存或足够内存）；  
   - 使用 `hf_constraint` 需要创建Python环境，`hf_backend\requirements.txt`。
 
+> 说明：主工程（`Weasel*`）是 Windows TSF/IME 实现，不能直接在 Linux 上编译运行。  
+> 若你在 Linux + `fcitx5-rime` 环境中使用本仓库能力，请参考 [`fcitx5/README.md`](fcitx5/README.md) 的适配层方案。
+
 ---
 
 ## 安装与构建

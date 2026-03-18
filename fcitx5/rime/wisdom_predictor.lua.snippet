@@ -1,0 +1,107 @@
+-- Wisdom-Weasel fcitx5 adapter
+-- Appends LLM prediction candidates by querying hf_backend HTTP API.
+if not _G.wisdom_predictor then
+  local function ww_trim(s)
+    return (s:gsub("^%s+", ""):gsub("%s+$", ""))
+  end
+
+  local function ww_json_escape(s)
+    s = s or ""
+    s = s:gsub("\\", "\\\\")
+    s = s:gsub("\"", "\\\"")
+    s = s:gsub("\n", "\\n")
+    s = s:gsub("\r", "\\r")
+    s = s:gsub("\t", "\\t")
+    return s
+  end
+
+  local function ww_shell_escape(s)
+    s = s or ""
+    return "'" .. s:gsub("'", "'\\''") .. "'"
+  end
+
+  local function ww_split_pinyin(input)
+    local out = {}
+    for syllable in input:gmatch("[a-z]+") do
+      out[#out + 1] = syllable
+    end
+    return out
+  end
+
+  local function ww_build_payload(prompt, constraints)
+    local quoted = {}
+    for i = 1, #constraints do
+      quoted[#quoted + 1] = "\"" .. ww_json_escape(constraints[i]) .. "\""
+    end
+    return "{\"prompt\":\"" .. ww_json_escape(prompt) .. "\",\"pinyin_constraints\":[" ..
+        table.concat(quoted, ",") .. "]}"
+  end
+
+  function wisdom_predictor(input, seg, env)
+    if not input or input == "" then
+      return
+    end
+
+    -- Keep this translator focused on pinyin-like input.
+    if not input:match("^[a-z']+$") then
+      return
+    end
+
+    local config = env.engine.schema.config
+    local endpoint = config:get_string("wisdom_predictor/endpoint")
+    if not endpoint or endpoint == "" then
+      endpoint = "http://127.0.0.1:8000/v1/generate/completions"
+    end
+
+    local timeout_ms = config:get_int("wisdom_predictor/timeout_ms")
+    if not timeout_ms or timeout_ms <= 0 then
+      timeout_ms = 800
+    end
+
+    local min_input_length = config:get_int("wisdom_predictor/min_input_length")
+    if not min_input_length or min_input_length < 1 then
+      min_input_length = 2
+    end
+
+    if #input < min_input_length then
+      return
+    end
+
+    local constraints = ww_split_pinyin(input)
+    local payload = ww_build_payload(input, constraints)
+    local timeout_s = string.format("%.3f", timeout_ms / 1000.0)
+    local cmd = "curl -sS --max-time " .. timeout_s ..
+        " -H 'Content-Type: application/json' -X POST " .. ww_shell_escape(endpoint) ..
+        " --data-raw " .. ww_shell_escape(payload) .. " 2>/dev/null"
+
+    local pipe = io.popen(cmd)
+    if not pipe then
+      return
+    end
+    local body = pipe:read("*a") or ""
+    pipe:close()
+    if body == "" then
+      return
+    end
+
+    local responses = body:match([["responses"%s*:%s*"([^"]*)"]])
+    if not responses or responses == "" then
+      return
+    end
+
+    responses = responses:gsub('\\"', '"'):gsub("\\n", " "):gsub("\\t", " ")
+    responses = ww_trim(responses)
+    if responses == "" then
+      return
+    end
+
+    local seen = {}
+    for cand in responses:gmatch("%S+") do
+      cand = ww_trim(cand)
+      if cand ~= "" and cand ~= input and not seen[cand] then
+        seen[cand] = true
+        yield(Candidate("wisdom_predictor", seg.start, seg._end, cand, "〔LLM〕"))
+      end
+    end
+  end
+end
